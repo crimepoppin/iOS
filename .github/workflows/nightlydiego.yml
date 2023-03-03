@@ -1,9 +1,8 @@
 name: Nightly Integration Tests (diego)
 
 on:
-  push:
-    branches:
-      - diego/fix-fingerprinting-test
+  workflow_dispatch:
+    inputs:
 
 jobs:
   atb-ui-tests:
