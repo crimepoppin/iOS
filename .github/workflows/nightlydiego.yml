@@ -1,8 +1,7 @@
 name: Nightly Integration Tests (diego)
 
 on:
-  workflow_dispatch:
-    inputs:
+  workflow_dispatch
 
 jobs:
   atb-ui-tests:
