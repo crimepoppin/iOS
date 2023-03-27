@@ -1015,6 +1015,7 @@
 		4B6484E627FD1E340050A7A1 /* FontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontExtension.swift; sourceTree = "<group>"; };
 		4B6484E927FD1E340050A7A1 /* MenuControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuControllerView.swift; sourceTree = "<group>"; };
 		4B6484FB27FFD14F0050A7A1 /* WindowsBrowserWaitlistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowsBrowserWaitlistTests.swift; sourceTree = "<group>"; };
+		4B7059F429D251FD009FCFA6 /* BrowserServicesKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BrowserServicesKit; path = ../BrowserServicesKit; sourceTree = "<group>"; };
 		4B75EA9126A266CB00018634 /* PrintingUserScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintingUserScript.swift; sourceTree = "<group>"; };
 		4BC21A2C272388BD00229F0E /* RunLoopExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunLoopExtensionTests.swift; sourceTree = "<group>"; };
 		4BE27566272F878F006B20B0 /* URLRequestExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLRequestExtension.swift; path = ../DuckDuckGo/URLRequestExtension.swift; sourceTree = "<group>"; };
@@ -2848,6 +2849,7 @@
 			isa = PBXGroup;
 			children = (
 				6FB030C7234331B400A10DB9 /* Configuration.xcconfig */,
+				4B7059F429D251FD009FCFA6 /* BrowserServicesKit */,
 				84E341941E2F7EFB00BDBA6F /* DuckDuckGo */,
 				F143C2E51E4A4CD400CFDE3A /* Core */,
 				F1EEAC461EAFC708006128D9 /* Fonts */,
@@ -4468,7 +4470,6 @@
 				0A991F5B239418D100AA1F64 /* Prevent Version Override */,
 				98B0CE69251C937D003FB601 /* Update Localizable.strings */,
 				84E3418E1E2F7EFB00BDBA6F /* Sources */,
-				8558AA7D20EE3CB200A346E9 /* Swift Lint */,
 				84E3418F1E2F7EFB00BDBA6F /* Frameworks */,
 				85F4D03A1F44A7BE0018BFD5 /* Install Fonts */,
 				84E341901E2F7EFB00BDBA6F /* Resources */,
@@ -4479,6 +4480,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				4B7059F729D252E2009FCFA6 /* PBXTargetDependency */,
 				F143C2EA1E4A4CD400CFDE3A /* PBXTargetDependency */,
 				8390447520BDCE10006461CD /* PBXTargetDependency */,
 				85482D932462DCD100EDEDD1 /* PBXTargetDependency */,
@@ -4776,6 +4778,7 @@
 				4B5167402824B492004C67BA /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				98A16C2928A11BDE00A6C003 /* XCRemoteSwiftPackageReference "BrowserServicesKit" */,
 				F4D7F632298C00C3006C3AE9 /* XCRemoteSwiftPackageReference "ios-js-support" */,
+				4B7059F529D252C2009FCFA6 /* XCRemoteSwiftPackageReference "SwiftLint" */,
 			);
 			productRefGroup = 84E341931E2F7EFB00BDBA6F /* Products */;
 			projectDirPath = "";
@@ -5056,21 +5059,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$SOURCE_ROOT/check_version.sh\"\n";
-		};
-		8558AA7D20EE3CB200A346E9 /* Swift Lint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Swift Lint";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [[ -n \"$CI\" ]] || [[ -n \"$BITRISE_IO\" ]]; then\n    echo \"Skipping SwiftLint run in CI\"\n    exit 0\nfi\n\nif test -d \"/opt/homebrew/bin/\"; then\n    PATH=\"/opt/homebrew/bin/:${PATH}\"\nfi\n\nif test -d \"$HOME/.mint/bin/\"; then\n    PATH=\"$HOME/.mint/bin/:${PATH}\"\nfi\n\nexport PATH\n\nif which swiftlint >/dev/null; then\n   if [ \"$CONFIGURATION\" = \"Release\" ]; then\n       swiftlint lint --strict\n       if [ $? -ne 0 ]; then\n           echo \"error: SwiftLint validation failed.\"\n           exit 1\n       fi\n   else\n       swiftlint lint\n   fi\nelse\n   echo \"error: SwiftLint not installed. Install using \\`brew install swiftlint\\`\"\n   exit 1\nfi\n";
 		};
 		85F4D03A1F44A7BE0018BFD5 /* Install Fonts */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5746,6 +5734,10 @@
 			isa = PBXTargetDependency;
 			target = 84E341911E2F7EFB00BDBA6F /* DuckDuckGo */;
 			targetProxy = 025CCFE72582601C001CD5BB /* PBXContainerItemProxy */;
+		};
+		4B7059F729D252E2009FCFA6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 4B7059F629D252E2009FCFA6 /* SwiftLintPlugin */;
 		};
 		8390447520BDCE10006461CD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -7425,6 +7417,14 @@
 				version = 3.3.0;
 			};
 		};
+		4B7059F529D252C2009FCFA6 /* XCRemoteSwiftPackageReference "SwiftLint" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/SwiftLint.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.51.0;
+			};
+		};
 		4B82E97E25B634B800656FE7 /* XCRemoteSwiftPackageReference "TrackerRadarKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/duckduckgo/TrackerRadarKit.git";
@@ -7526,6 +7526,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B5167402824B492004C67BA /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
+		};
+		4B7059F629D252E2009FCFA6 /* SwiftLintPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B7059F529D252C2009FCFA6 /* XCRemoteSwiftPackageReference "SwiftLint" */;
+			productName = "plugin:SwiftLintPlugin";
 		};
 		4B82E97F25B634B800656FE7 /* TrackerRadarKit */ = {
 			isa = XCSwiftPackageProductDependency;
