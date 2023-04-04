@@ -1015,7 +1015,6 @@
 		4B6484E627FD1E340050A7A1 /* FontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontExtension.swift; sourceTree = "<group>"; };
 		4B6484E927FD1E340050A7A1 /* MenuControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuControllerView.swift; sourceTree = "<group>"; };
 		4B6484FB27FFD14F0050A7A1 /* WindowsBrowserWaitlistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowsBrowserWaitlistTests.swift; sourceTree = "<group>"; };
-		4B7059F429D251FD009FCFA6 /* BrowserServicesKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BrowserServicesKit; path = ../BrowserServicesKit; sourceTree = "<group>"; };
 		4B75EA9126A266CB00018634 /* PrintingUserScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintingUserScript.swift; sourceTree = "<group>"; };
 		4BC21A2C272388BD00229F0E /* RunLoopExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunLoopExtensionTests.swift; sourceTree = "<group>"; };
 		4BE27566272F878F006B20B0 /* URLRequestExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLRequestExtension.swift; path = ../DuckDuckGo/URLRequestExtension.swift; sourceTree = "<group>"; };
@@ -2849,7 +2848,6 @@
 			isa = PBXGroup;
 			children = (
 				6FB030C7234331B400A10DB9 /* Configuration.xcconfig */,
-				4B7059F429D251FD009FCFA6 /* BrowserServicesKit */,
 				84E341941E2F7EFB00BDBA6F /* DuckDuckGo */,
 				F143C2E51E4A4CD400CFDE3A /* Core */,
 				F1EEAC461EAFC708006128D9 /* Fonts */,
@@ -7437,8 +7435,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DuckDuckGo/BrowserServicesKit";
 			requirement = {
-				kind = exactVersion;
-				version = 51.4.0;
+				branch = "sam/swiftlint-plugin";
+				kind = branch;
 			};
 		};
 		C14882EB27F211A000D59F0C /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
