@@ -747,6 +747,7 @@
 		EE0153EB2A6FF970002A8B26 /* NetworkProtectionRootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0153EA2A6FF970002A8B26 /* NetworkProtectionRootViewModelTests.swift */; };
 		EE0153ED2A6FF9E6002A8B26 /* NetworkProtectionRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0153EC2A6FF9E6002A8B26 /* NetworkProtectionRootView.swift */; };
 		EE0153EF2A70021E002A8B26 /* NetworkProtectionInviteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0153EE2A70021E002A8B26 /* NetworkProtectionInviteView.swift */; };
+		EE1F425F2A8CB79100548F31 /* PacketTunnelProvider.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 02025662298818B100E694E7 /* PacketTunnelProvider.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EE276BEA2A77F823009167B6 /* NetworkProtectionRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE276BE92A77F823009167B6 /* NetworkProtectionRootViewController.swift */; };
 		EE3766DE2AC5945500AAB575 /* NetworkProtectionUNNotificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3766DD2AC5945500AAB575 /* NetworkProtectionUNNotificationPresenter.swift */; };
 		EE3B226B29DE0F110082298A /* MockInternalUserStoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B226A29DE0F110082298A /* MockInternalUserStoring.swift */; };
@@ -986,6 +987,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				EE1F425F2A8CB79100548F31 /* PacketTunnelProvider.appex in Embed App Extensions */,
 				85482D942462DCD100EDEDD1 /* OpenAction.appex in Embed App Extensions */,
 				8512EA5D24ED30D30073EE19 /* WidgetsExtension.appex in Embed App Extensions */,
 				8390447620BDCE10006461CD /* ShareExtension.appex in Embed App Extensions */,
@@ -7951,6 +7953,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "NETWORK_PROTECTION DEBUG";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
