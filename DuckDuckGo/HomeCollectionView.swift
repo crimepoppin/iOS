@@ -63,7 +63,10 @@ class HomeCollectionView: UICollectionView {
         register(EmptyCollectionReusableView.self,
                  forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                  withReuseIdentifier: EmptyCollectionReusableView.reuseIdentifier)
-        
+        register(UINib(nibName: "FavoritesDisplayModeCollectionReusableView", bundle: nil),
+                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                 withReuseIdentifier: FavoritesDisplayModeCollectionReusableView.reuseIdentifier)
+
         contentInset = UIEdgeInsets(top: Constants.topInset, left: 0, bottom: 0, right: 0)
     }
     

@@ -129,6 +129,11 @@ class FavoritesHomeViewSectionRenderer: NSObject, HomeViewSectionRenderer {
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                   withReuseIdentifier: FavoritesDisplayModeCollectionReusableView.reuseIdentifier,
+                                                                   for: indexPath)
+        }
         return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                withReuseIdentifier: EmptyCollectionReusableView.reuseIdentifier,
                                                                for: indexPath)
@@ -192,7 +197,7 @@ class FavoritesHomeViewSectionRenderer: NSObject, HomeViewSectionRenderer {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize? {
-        return CGSize(width: 1, height: Constants.defaultHeaderHeight)
+        return CGSize(width: collectionView.frame.width, height: 52)
     }
 
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
