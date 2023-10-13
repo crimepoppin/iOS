@@ -55,7 +55,8 @@ extension MainViewFactory {
 
     private func createViews() {
         createLogoBackground()
-        createContentContainer()
+        createWebViewContainer()
+        createHomeScreenContainer()
         createSuggestionTrayContainer()
         createNotificationBarContainer()
         createStatusBackground()
@@ -85,10 +86,16 @@ extension MainViewFactory {
         superview.addSubview(coordinator.notificationBarContainer)
     }
 
-    class ContentContainer: UIView { }
-    private func createContentContainer() {
-        coordinator.contentContainer = ContentContainer()
-        superview.addSubview(coordinator.contentContainer)
+    class WebViewContainer: UIView { }
+    private func createWebViewContainer() {
+        coordinator.webViewContainer = WebViewContainer()
+        superview.addSubview(coordinator.webViewContainer)
+    }
+
+    class HomeScreenContainer: UIView { }
+    private func createHomeScreenContainer() {
+        coordinator.homeScreenContainer = HomeScreenContainer()
+        superview.addSubview(coordinator.homeScreenContainer)
     }
 
     class StatusBackgroundView: UIView { }
@@ -157,7 +164,8 @@ extension MainViewFactory {
 
     private func constrainViews() {
         constrainLogoBackground()
-        constrainContentContainer()
+        constrainHomeScreenContainer()
+        constrainWebContainer()
         constrainSuggestionTrayContainer()
         constrainNotificationBarContainer()
         constrainStatusBackground()
@@ -235,7 +243,7 @@ extension MainViewFactory {
 
     private func constrainNotificationBarContainer() {
         let notificationBarContainer = coordinator.notificationBarContainer!
-        let contentContainer = coordinator.contentContainer!
+        let homeScreenContainer = coordinator.homeScreenContainer!
         let navigationBarContainer = coordinator.navigationBarContainer!
         let statusBackground = coordinator.statusBackground!
 
@@ -247,26 +255,37 @@ extension MainViewFactory {
             notificationBarContainer.constrainView(superview, by: .width),
             notificationBarContainer.constrainView(superview, by: .centerX),
             coordinator.constraints.notificationContainerHeight,
-            notificationBarContainer.constrainView(contentContainer, by: .bottom, to: .top),
+            notificationBarContainer.constrainView(homeScreenContainer, by: .bottom, to: .top),
             coordinator.constraints.notificationContainerTopToNavigationBar,
         ])
     }
 
-    private func constrainContentContainer() {
-        let contentContainer = coordinator.contentContainer!
+    private func constrainWebContainer() {
+        let webContainer = coordinator.webViewContainer!
+
+        NSLayoutConstraint.activate([
+            webContainer.constrainView(superview, by: .top),
+            webContainer.constrainView(superview, by: .bottom),
+            webContainer.constrainView(superview, by: .leading),
+            webContainer.constrainView(superview, by: .trailing),
+        ])
+    }
+
+    private func constrainHomeScreenContainer() {
+        let homeScreenContainer = coordinator.homeScreenContainer!
         let toolbar = coordinator.toolbar!
         let notificationBarContainer = coordinator.notificationBarContainer!
         let navigationBarContainer = coordinator.navigationBarContainer!
 
-        coordinator.constraints.contentContainerTop = contentContainer.constrainView(notificationBarContainer, by: .top, to: .bottom)
-        coordinator.constraints.contentContainerBottomToToolbarTop = contentContainer.constrainView(toolbar, by: .bottom, to: .top)
-        coordinator.constraints.contentContainerBottomToNavigationBarContainerTop = contentContainer.constrainView(navigationBarContainer, by: .bottom, to: .top)
+        coordinator.constraints.homeScreenContainerTop = homeScreenContainer.constrainView(notificationBarContainer, by: .top, to: .bottom)
+        coordinator.constraints.homeScreenContainerBottomToToolbarTop = homeScreenContainer.constrainView(toolbar, by: .bottom, to: .top)
+        coordinator.constraints.homeScreenContainerBottomToNavigationBarContainerTop = homeScreenContainer.constrainView(navigationBarContainer, by: .bottom, to: .top)
 
         NSLayoutConstraint.activate([
-            contentContainer.constrainView(superview, by: .leading),
-            contentContainer.constrainView(superview, by: .trailing),
-            coordinator.constraints.contentContainerBottomToToolbarTop,
-            coordinator.constraints.contentContainerTop,
+            homeScreenContainer.constrainView(superview, by: .leading),
+            homeScreenContainer.constrainView(superview, by: .trailing),
+            coordinator.constraints.homeScreenContainerBottomToToolbarTop,
+            coordinator.constraints.homeScreenContainerTop,
         ])
     }
 
@@ -283,12 +302,12 @@ extension MainViewFactory {
 
     private func constrainSuggestionTrayContainer() {
         let suggestionTrayContainer = coordinator.suggestionTrayContainer!
-        let contentContainer = coordinator.contentContainer!
+        let homeScreenContainer = coordinator.homeScreenContainer!
         NSLayoutConstraint.activate([
-            suggestionTrayContainer.constrainView(contentContainer, by: .width),
-            suggestionTrayContainer.constrainView(contentContainer, by: .height),
-            suggestionTrayContainer.constrainView(contentContainer, by: .centerX),
-            suggestionTrayContainer.constrainView(contentContainer, by: .centerY),
+            suggestionTrayContainer.constrainView(homeScreenContainer, by: .width),
+            suggestionTrayContainer.constrainView(homeScreenContainer, by: .height),
+            suggestionTrayContainer.constrainView(homeScreenContainer, by: .centerX),
+            suggestionTrayContainer.constrainView(homeScreenContainer, by: .centerY),
         ])
     }
 
@@ -316,7 +335,8 @@ class MainViewCoordinator {
 
     let superview: UIView
 
-    var contentContainer: UIView!
+    var webViewContainer: UIView!
+    var homeScreenContainer: UIView!
     var lastToolbarButton: UIBarButtonItem!
     var logo: UIImageView!
     var logoContainer: UIView!
@@ -364,7 +384,7 @@ class MainViewCoordinator {
         var navigationBarContainerTop: NSLayoutConstraint!
         var navigationBarContainerBottom: NSLayoutConstraint!
         var toolbarBottom: NSLayoutConstraint!
-        var contentContainerTop: NSLayoutConstraint!
+        var homeScreenContainerTop: NSLayoutConstraint!
         var tabBarContainerTop: NSLayoutConstraint!
         var notificationContainerTopToNavigationBar: NSLayoutConstraint!
         var notificationContainerTopToStatusBackground: NSLayoutConstraint!
@@ -374,8 +394,8 @@ class MainViewCoordinator {
         var progressBarBottom: NSLayoutConstraint!
         var statusBackgroundToNavigationBarContainerBottom: NSLayoutConstraint!
         var statusBackgroundBottomToSafeAreaTop: NSLayoutConstraint!
-        var contentContainerBottomToToolbarTop: NSLayoutConstraint!
-        var contentContainerBottomToNavigationBarContainerTop: NSLayoutConstraint!
+        var homeScreenContainerBottomToToolbarTop: NSLayoutConstraint!
+        var homeScreenContainerBottomToNavigationBarContainerTop: NSLayoutConstraint!
 
     }
 
@@ -395,7 +415,7 @@ class MainViewCoordinator {
     }
 
     func setAddressBarTopActive(_ active: Bool) {
-        constraints.contentContainerBottomToToolbarTop.isActive = active
+        constraints.homeScreenContainerBottomToToolbarTop.isActive = active
         constraints.navigationBarContainerTop.isActive = active
         constraints.progressBarTop.isActive = active
         constraints.notificationContainerTopToNavigationBar.isActive = active
@@ -403,7 +423,7 @@ class MainViewCoordinator {
     }
 
     func setAddressBarBottomActive(_ active: Bool) {
-        constraints.contentContainerBottomToNavigationBarContainerTop.isActive = active
+        constraints.homeScreenContainerBottomToNavigationBarContainerTop.isActive = active
         constraints.progressBarBottom.isActive = active
         constraints.navigationBarContainerBottom.isActive = active
         constraints.notificationContainerTopToStatusBackground.isActive = active

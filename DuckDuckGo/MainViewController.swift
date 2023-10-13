@@ -55,7 +55,7 @@ class MainViewController: UIViewController {
 
     var allowContentUnderflow = false {
         didSet {
-            viewCoordinator.constraints.contentContainerTop.constant = allowContentUnderflow ? contentUnderflow : 0
+            viewCoordinator.constraints.homeScreenContainerTop.constant = allowContentUnderflow ? contentUnderflow : 0
         }
     }
     
@@ -536,6 +536,7 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func attachHomeScreen() {
+        viewCoordinator.homeScreenContainer.isUserInteractionEnabled = true
         viewCoordinator.logoContainer.isHidden = false
         findInPageView.isHidden = true
         chromeManager.detach()
@@ -554,13 +555,17 @@ class MainViewController: UIViewController {
         controller.chromeDelegate = self
         controller.delegate = self
 
-        addToView(controller: controller)
+        viewCoordinator.homeScreenContainer.subviews.forEach { $0.removeFromSuperview() }
+        viewCoordinator.homeScreenContainer.addSubview(controller.view)
+        controller.view.frame = viewCoordinator.homeScreenContainer.bounds
+        controller.didMove(toParent: self)
 
         refreshControls()
         syncService.scheduler.requestSyncImmediately()
     }
 
     fileprivate func removeHomeScreen() {
+        viewCoordinator.homeScreenContainer.isUserInteractionEnabled = false
         homeController?.willMove(toParent: nil)
         homeController?.dismiss()
         homeController = nil
@@ -720,19 +725,17 @@ class MainViewController: UIViewController {
         updateFindInPage()
         currentTab?.progressWorker.progressBar = nil
         currentTab?.chromeDelegate = nil
-        addToView(controller: tab)
+
+        viewCoordinator.webViewContainer.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+        viewCoordinator.webViewContainer.addSubview(tab.view)
+        tab.view.frame = viewCoordinator.webViewContainer.bounds
+        tab.didMove(toParent: self)
+
         tab.progressWorker.progressBar = viewCoordinator.progress
         chromeManager.attach(to: tab.webView.scrollView)
         tab.chromeDelegate = self
-    }
-
-    private func addToView(controller: UIViewController) {
-        addChild(controller)
-        viewCoordinator.contentContainer.subviews.forEach { $0.removeFromSuperview() }
-        viewCoordinator.contentContainer.addSubview(controller.view)
-        controller.view.frame = viewCoordinator.contentContainer.bounds
-        controller.didMove(toParent: self)
-
     }
 
     fileprivate func updateCurrentTab() {
@@ -1152,10 +1155,22 @@ extension MainViewController: BrowserChromeDelegate {
         }
         
         if animated {
-            UIView.animate(withDuration: ChromeAnimationConstants.duration, animations: updateBlock)
+            UIView.animate(withDuration: ChromeAnimationConstants.duration, animations: updateBlock) { _ in
+                self.applyWebViewInsets()
+            }
         } else {
             updateBlock()
+            self.applyWebViewInsets()
         }
+    }
+
+    // TODO
+    #warning("Insets not being set correctly here")
+    func applyWebViewInsets() {
+        let y = viewCoordinator.toolbar.frame.origin.y
+        let bottom = view.frame.maxY - y + view.safeAreaInsets.bottom
+        print("***", #function, bottom)
+        self.currentTab?.webView?.scrollView.contentInset = .init(top: 0, left: 0, bottom: bottom, right: 0)
     }
 
     func setNavigationBarHidden(_ hidden: Bool) {
