@@ -382,6 +382,13 @@ class TabViewController: UIViewController {
         webView = WKWebView(frame: view.bounds, configuration: configuration)
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
+        let pullToRefresh = UIRefreshControl()
+        pullToRefresh.addAction(UIAction { [weak self] _ in
+            self?.reload()
+            pullToRefresh.endRefreshing()
+        }, for: .primaryActionTriggered)
+        webView.scrollView.addSubview(pullToRefresh)
+
         webView.allowsLinkPreview = true
         webView.allowsBackForwardNavigationGestures = true
 
