@@ -76,7 +76,7 @@ class MainViewController: UIViewController {
 
     var tabManager: TabManager!
     let previewsSource = TabPreviewsSource()
-    fileprivate lazy var appSettings: AppSettings = AppUserDefaults()
+    let appSettings: AppSettings
     private var launchTabObserver: LaunchTabNotification.Observer?
     
     private let appTrackingProtectionDatabase: CoreDataDatabase
@@ -133,7 +133,8 @@ class MainViewController: UIViewController {
         bookmarksDatabaseCleaner: BookmarkDatabaseCleaner,
         appTrackingProtectionDatabase: CoreDataDatabase,
         syncService: DDGSyncing,
-        syncDataProviders: SyncDataProviders
+        syncDataProviders: SyncDataProviders,
+        appSettings: AppSettings
     ) {
         self.appTrackingProtectionDatabase = appTrackingProtectionDatabase
         self.bookmarksDatabase = bookmarksDatabase
@@ -142,6 +143,7 @@ class MainViewController: UIViewController {
         self.syncDataProviders = syncDataProviders
         self.favoritesViewModel = FavoritesListViewModel(bookmarksDatabase: bookmarksDatabase)
         self.bookmarksCachingSearch = BookmarksCachingSearch(bookmarksStore: CoreDataBookmarksSearchStore(bookmarksStore: bookmarksDatabase))
+        self.appSettings = appSettings
 
         super.init(nibName: nil, bundle: nil)
 
@@ -335,7 +337,10 @@ class MainViewController: UIViewController {
 
         case .bottom:
             viewCoordinator.omniBar.moveSeparatorToTop()
-            viewCoordinator.hideToolbarSeparator()
+            // If this is called before the toolbar has shown it will not re-add the separator when moving to the top position
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.viewCoordinator.hideToolbarSeparator()
+            }
         }
 
         let theme = ThemeManager.shared.currentTheme
@@ -354,6 +359,10 @@ class MainViewController: UIViewController {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
             return
         }
+        let duration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+        let animationCurveRawNSN = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber
+        let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIView.AnimationOptions.curveEaseInOut.rawValue
+        let animationCurve = UIView.AnimationOptions(rawValue: animationCurveRaw)
 
         var height = keyboardFrame.size.height
 
@@ -376,21 +385,20 @@ class MainViewController: UIViewController {
             }
         }
 
-        let navBarOffset = min(0, toolbarHeight - intersection.height)
-        self.viewCoordinator.constraints.omniBarBottom.constant = appSettings.currentAddressBarPosition == .bottom ? navBarOffset : 0
-        self.animateForKeyboard(userInfo: userInfo, y: self.view.frame.height - height)
-    }
-
-    private func animateForKeyboard(userInfo: [AnyHashable: Any], y: CGFloat) {
-        let duration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
-        let animationCurveRawNSN = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber
-        let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIView.AnimationOptions.curveEaseInOut.rawValue
-        let animationCurve = UIView.AnimationOptions(rawValue: animationCurveRaw)
-
+        let y = self.view.frame.height - height
         let frame = self.findInPageView.frame
         UIView.animate(withDuration: duration, delay: 0, options: animationCurve, animations: {
             self.findInPageView.frame = CGRect(x: 0, y: y - frame.height, width: frame.width, height: frame.height)
         }, completion: nil)
+
+        if self.appSettings.currentAddressBarPosition.isBottom {
+            let navBarOffset = min(0, self.toolbarHeight - intersection.height)
+            self.viewCoordinator.constraints.omniBarBottom.constant = navBarOffset
+            UIView.animate(withDuration: duration, delay: 0, options: animationCurve) {
+                self.viewCoordinator.navigationBarContainer.superview?.layoutIfNeeded()
+            }
+        }
+
     }
 
     private func initTabButton() {
@@ -439,7 +447,8 @@ class MainViewController: UIViewController {
     @objc func quickSaveBookmark() {
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         guard currentTab != nil else {
-            ActionMessageView.present(message: UserText.webSaveBookmarkNone)
+            ActionMessageView.present(message: UserText.webSaveBookmarkNone,
+                                      presentationLocation: .withBottomBar(andAddressBarBottom: appSettings.currentAddressBarPosition.isBottom))
             return
         }
         
@@ -1871,7 +1880,8 @@ extension MainViewController: AutoClearWorker {
             DaxDialogs.shared.resumeRegularFlow()
             self.forgetTabs()
         } onTransitionCompleted: {
-            ActionMessageView.present(message: UserText.actionForgetAllDone)
+            ActionMessageView.present(message: UserText.actionForgetAllDone,
+                                      presentationLocation: .withBottomBar(andAddressBarBottom: self.appSettings.currentAddressBarPosition.isBottom))
             transitionCompletion?()
         } completion: {
             Instruments.shared.endTimedEvent(for: spid)
