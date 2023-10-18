@@ -8983,7 +8983,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DuckDuckGo/BrowserServicesKit";
 			requirement = {
-				branch = "dominik/sync-ffs-favorites";
+				branch = "dominik/sync-favicons-fetching";
 				kind = branch;
 			};
 		};
